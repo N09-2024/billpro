@@ -34,6 +34,7 @@ public class Manager {
     @Temporal(TemporalType.DATE)
     private Date date_fct;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "super_admin_id")
     private SuperAdmin superAdmin;
@@ -42,8 +43,7 @@ public class Manager {
     @OneToMany(mappedBy = "manager")
     private List<HistoriqueEmploye> historiquesEmployes = new ArrayList<>();
 
-
-    public Manager() {}
-
+    public Manager() {
+    }
 
 }

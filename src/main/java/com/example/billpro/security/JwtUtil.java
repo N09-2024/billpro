@@ -14,10 +14,9 @@ public class JwtUtil {
 
     // Clé secrète (doit faire au moins 256 bits pour HS512)
     private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(
-            "BillProMobile2025SecretKeyUltraLongAndRandom12345678901234567890".getBytes()
-    );
+            "BillProMobile2025SecretKeyUltraLongAndRandom12345678901234567890".getBytes());
 
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 heures  duree de vie de token
+    private final long EXPIRATION_TIME = 1000 * 60 * 30; // 30 minutes - durée de vie du token
 
     // Génère le token
     public String generateToken(String email, String role, String nom, String prenom) {

@@ -45,6 +45,8 @@ public class SecurityConfig {
                         // Optionnel : autoriser H2 console si tu l'utilises
                         .requestMatchers("/h2-console/**").permitAll()
 
+                        .requestMatchers("/api/superadmin/**").hasRole("SUPERADMIN")
+
                         // Tout le reste nécessite d'être authentifié
                         .anyRequest().authenticated()
 

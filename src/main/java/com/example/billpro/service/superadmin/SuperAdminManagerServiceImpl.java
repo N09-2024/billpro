@@ -84,8 +84,6 @@ public class SuperAdminManagerServiceImpl implements SuperAdminManagerService {
 
     @Override
     public Manager updateManager(String idMan, Manager managerDetails) {
-        SuperAdmin superAdmin = getSuperAdminFromContext();
-
         Manager manager = managerRepository.findById(idMan)
                 .orElseThrow(() -> new RuntimeException("Manager non trouvé"));
 
@@ -95,21 +93,16 @@ public class SuperAdminManagerServiceImpl implements SuperAdminManagerService {
         manager.setTel(managerDetails.getTel());
         manager.setCin(managerDetails.getCin());
         manager.setDate_naissance(managerDetails.getDate_naissance());
+        if (managerDetails.getActif() != null) manager.setActif(managerDetails.getActif());
 
-        if (managerDetails.getActif() != null) {
-            manager.setActif(managerDetails.getActif());
-        }
-
-        // Mise à jour du mot de passe si fourni
+        // Ne pas écraser le mot de passe si null/empty
         if (managerDetails.getMdp() != null && !managerDetails.getMdp().trim().isEmpty()) {
-            String hashedPassword = passwordEncoder.encode(managerDetails.getMdp());
-            manager.setMdp(hashedPassword);
+            manager.setMdp(passwordEncoder.encode(managerDetails.getMdp()));
         }
 
-        Manager updated = managerRepository.save(manager);
-
-        return updated;
+        return managerRepository.save(manager);
     }
+
 
 
     @Override

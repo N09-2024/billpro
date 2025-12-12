@@ -23,6 +23,9 @@ public class SuperAdminProfileController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile() {
         try {
@@ -74,6 +77,31 @@ public class SuperAdminProfileController {
             Map<String, String> error = new HashMap<>();
             error.put("message", "Erreur: " + e.getMessage());
             return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<?> updatePassword(@RequestBody com.example.billpro.dto.PasswordChangeRequest request) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String email = auth.getName();
+
+            SuperAdmin superAdmin = superAdminRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("SuperAdmin non trouvé"));
+
+            // Vérifier l'ancien mot de passe
+            if (!passwordEncoder.matches(request.oldPassword(), superAdmin.getMdp())) {
+                return ResponseEntity.status(401).body(Map.of("message", "Ancien mot de passe incorrect"));
+            }
+
+            // Mettre à jour avec le nouveau mot de passe
+            superAdmin.setMdp(passwordEncoder.encode(request.newPassword()));
+            superAdminRepository.save(superAdmin);
+
+            return ResponseEntity.ok(Map.of("message", "Mot de passe mis à jour avec succès"));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Erreur: " + e.getMessage()));
         }
     }
 }

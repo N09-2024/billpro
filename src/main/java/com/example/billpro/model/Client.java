@@ -1,9 +1,9 @@
 package com.example.billpro.model;
 
-
 import com.example.billpro.model.Facture;
 import com.example.billpro.model.HistoriqueClient;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.ArrayList;
@@ -25,12 +25,14 @@ public class Client {
     private String adresse;
     private String cin;
 
-
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     private List<HistoriqueClient> historiquesEmployes = new ArrayList<>();
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     private List<Facture> factures = new ArrayList<>();
 
-    public Client() {}
+    public Client() {
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.billpro.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;
@@ -28,20 +29,22 @@ public class Facture {
     @Enumerated(EnumType.STRING)
     private StatutFacture statut;
 
-
-
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
 
     @OneToMany(mappedBy = "facture")
+    @JsonIgnore
     private List<Paiement> paiements = new ArrayList<>();
 
     @OneToMany(mappedBy = "facture")
+    @JsonIgnore
     private List<HistoriqueFacture> historiquesEmployes = new ArrayList<>();
 
     @OneToMany(mappedBy = "facture")
+    @JsonIgnore
     private List<LigneFacture> lignes = new ArrayList<>();
 
-    public Facture() {}
+    public Facture() {
+    }
 }

@@ -82,6 +82,11 @@ public class SuperAdminProfileController {
 
     @PostMapping("/password")
     public ResponseEntity<?> updatePassword(@RequestBody com.example.billpro.dto.PasswordChangeRequest request) {
+        System.out.println("DEBUG: Reçu demande changement mot de passe pour user: "
+                + SecurityContextHolder.getContext().getAuthentication().getName());
+        System.out.println("DEBUG: OldPwd present: " + (request.getOldPassword() != null));
+        System.out.println("DEBUG: NewPwd present: " + (request.getNewPassword() != null));
+
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String email = auth.getName();
@@ -90,17 +95,20 @@ public class SuperAdminProfileController {
                     .orElseThrow(() -> new RuntimeException("SuperAdmin non trouvé"));
 
             // Vérifier l'ancien mot de passe
-            if (!passwordEncoder.matches(request.oldPassword(), superAdmin.getMdp())) {
+            if (!passwordEncoder.matches(request.getOldPassword(), superAdmin.getMdp())) {
+                System.out.println("DEBUG: Ancien mot de passe incorrect");
                 return ResponseEntity.status(401).body(Map.of("message", "Ancien mot de passe incorrect"));
             }
 
             // Mettre à jour avec le nouveau mot de passe
-            superAdmin.setMdp(passwordEncoder.encode(request.newPassword()));
+            superAdmin.setMdp(passwordEncoder.encode(request.getNewPassword()));
             superAdminRepository.save(superAdmin);
 
+            System.out.println("DEBUG: Mot de passe mis à jour avec succès");
             return ResponseEntity.ok(Map.of("message", "Mot de passe mis à jour avec succès"));
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(Map.of("message", "Erreur: " + e.getMessage()));
         }
     }

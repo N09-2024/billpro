@@ -40,7 +40,7 @@ public class SuperAdminProfileController {
             response.put("nom", superAdmin.getNom());
             response.put("prenom", superAdmin.getPrenom());
             response.put("email", superAdmin.getEmail());
-            // Ajouter d'autres champs si nécessaires
+
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
